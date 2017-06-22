@@ -111,7 +111,7 @@ function _chroot {
 }
 
 function _apt {
-    _op _chroot apt-get -qq "$@"
+    _op _chroot $EATMYDATA apt-get -qq "$@"
 }
 
 function _umount {
@@ -184,6 +184,11 @@ function _modify_image {
         echo "unset old_host_name # this will make the system always set the hostname from DHCP" \
         > mnt/img_root/etc/dhcp/dhclient-enter-hooks.d/unset_old_hostname || die "Could not apply fix http://blog.schlomo.schapiro.org/2013/11/setting-hostname-from-dhcp-in-debian.html"
     fi
+
+    echo "Installing eatmydata"
+    _apt install eatmydata
+    EATMYDATA=eatmydata
+
     if [[ "${ADD_REPOS:-}" ]] ; then
         _apt update || die "Could not update package sources"
         _apt install debian-archive-keyring apt-transport-https || die "Could not install debian-archive-keyring apt-transport-https"
