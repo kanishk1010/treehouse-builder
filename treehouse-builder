@@ -14,8 +14,12 @@
 # ADD_REPO_KEYS=()
 
 # Raspbian
-RASPBIAN_URL=http://people.sugarlabs.org/ignacio/2017-04-10-raspbian-jessie.zip
-RASPBIAN_SHA1=6d7b11bb3d64524203edf6c80c499456fb5fef53
+#RASPBIAN_URL=http://people.sugarlabs.org/ignacio/2017-04-10-raspbian-jessie.zip
+#RASPBIAN_SHA1=6d7b11bb3d64524203edf6c80c499456fb5fef53
+
+RASPBIAN_URL=http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-06-23/2017-06-21-raspbian-jessie.zip
+RASPBIAN_SHA1=82a4ecfaadbef4cfb8625f673b5f7b91c24c8e32
+
 #RASPBIAN_URL=http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-01-10/2017-01-11-raspbian-jessie.zip
 #RASPBIAN_SHA1=f987935e3e99366a6f1bf0d60a7a83fe3edb013c
 
@@ -63,7 +67,23 @@ ADD_REPO_KEYS=(
 # Example: CUSTOM_COMMAND="curl http://some.domain/script.sh | bash -i ; rm -f /some/file"
 CUSTOM_COMMAND="\
     update-alternatives --set editor /usr/bin/vim.basic;
-    sudo touch /boot/ssh;
+#    sudo touch /boot/ssh;
+    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -;
+    sudo apt-get install -y nodejs;
+    git clone https://github.com/snazzybunny/ip.git /home/pi/ip;
+    sudo npm --prefix /home/pi/ip install /home/pi/ip;
+    sudo tee -a /boot/autorunonce.sh >/dev/null <<-EOF
+#!/bin/bash
+sudo node /home/pi/ip/cli.js wifi ENTER_ESSID_HERE ENTER_WIFI_PASSWORD && sudo systemctl enable ssh && sudo systemctl start ssh
+sudo update-rc.d -f autorunonce remove
+rm -- $0
+EOF
+
+sudo mv /boot/autorunonce.sh /etc/init.d;
+update-rc.d autorunonce.sh defaults;
+
+
+
 #    docker pull dogi/rpi-couchdb
 "
 
