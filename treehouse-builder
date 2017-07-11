@@ -74,7 +74,7 @@ CUSTOM_COMMAND="\
     sudo npm --prefix /home/pi/ip install /home/pi/ip;
     sudo tee -a /boot/autorunonce.sh >/dev/null <<-EOF
 #!/bin/bash
-sudo node /home/pi/ip/cli.js wifi ENTER_ESSID_HERE ENTER_WIFI_PASSWORD && sudo systemctl enable ssh && sudo systemctl start ssh
+sudo node /home/pi/ip/cli.js wifi Hotspot 098765432 && sudo systemctl enable ssh && sudo systemctl start ssh
 sudo update-rc.d -f autorunonce remove
 rm -- $0
 EOF
